@@ -3,137 +3,159 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Invoice Kantin</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background: #f0f4f8;
-            padding: 30px;
+            font-family: Arial;
+            background: #f0fdf4;
+            padding: 20px;
         }
-        .invoice {
-            max-width: 500px;
+        .container {
+            max-width: 550px;
             margin: auto;
-            padding: 25px;
             background: white;
+            padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 15px #0002;
         }
-        h1 { color: #15803d; text-align: center; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td {
-            padding: 10px 5px;
-            border-bottom: 1px solid #ddd;
-            text-align: left;
-        }
-        th:last-child, td:last-child { text-align: right; }
-        .total {
-            margin-top: 20px;
-            line-height: 2;
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 7px 0 15px;
+            box-sizing: border-box;
         }
         button {
             width: 100%;
             padding: 12px;
-            margin-top: 20px;
+            margin-top: 10px;
             background: #15803d;
             color: white;
             border: none;
             border-radius: 6px;
             cursor: pointer;
         }
+        #hasil {
+            margin-top: 20px;
+            line-height: 1.8;
+        }
         @media print {
-            body { background: white; padding: 0; }
-            .invoice { box-shadow: none; }
-            button { display: none; }
+            .form, .tombol-cetak { display: none; }
+            body { background: white; }
         }
     </style>
 </head>
 <body>
-    <div class="invoice">
-        <h1>INVOICE KANTIN</h1>
-        <p id="pembeli"></p>
+<div class="container">
+    <h2>Invoice Kantin Sekolah</h2>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Barang</th>
-                    <th>Harga</th>
-                    <th>Jumlah</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody id="daftarBarang"></tbody>
-        </table>
+    <div class="form">
+        <label>Nama Pembeli</label>
+        <input type="text" id="nama" placeholder="Masukkan nama pembeli">
 
-        <div class="total" id="hasil"></div>
+        <h3>Barang 1</h3>
+        <label>Nama Barang</label>
+        <input type="text" id="barang1" value="Nasi Goreng">
+        <label>Harga Satuan (Rp)</label>
+        <input type="number" id="harga1" value="15000" min="0">
+        <label>Jumlah</label>
+        <input type="number" id="jumlah1" value="2" min="0">
 
-        <button onclick="window.print()">Cetak / Simpan PDF</button>
+        <h3>Barang 2</h3>
+        <label>Nama Barang</label>
+        <input type="text" id="barang2" value="Es Teh">
+        <label>Harga Satuan (Rp)</label>
+        <input type="number" id="harga2" value="5000" min="0">
+        <label>Jumlah</label>
+        <input type="number" id="jumlah2" value="1" min="0">
+
+        <h3>Barang 3</h3>
+        <label>Nama Barang</label>
+        <input type="text" id="barang3" value="Roti">
+        <label>Harga Satuan (Rp)</label>
+        <input type="number" id="harga3" value="7000" min="0">
+        <label>Jumlah</label>
+        <input type="number" id="jumlah3" value="2" min="0">
+
+        <button onclick="hitung()">Hitung Total Belanja</button>
     </div>
 
-    <script>
-        let namaPembeli = "Budi";
+    <div id="hasil"></div>
 
-        let nasiGoreng = 15000;
-        let jumlahNasi = 2;
+    <button class="tombol-cetak" onclick="window.print()">
+        Cetak / Simpan PDF
+    </button>
+</div>
 
-        let esTeh = 5000;
-        let jumlahEsTeh = 1;
+<script>
+function hitung() {
+    let nama = document.getElementById("nama").value.trim();
 
-        let roti = 7000;
-        let jumlahRoti = 2;
+    if (!nama) {
+        alert("Nama pembeli wajib diisi!");
+        return;
+    }
 
-        let subtotalNasi = nasiGoreng * jumlahNasi;
-        let subtotalEsTeh = esTeh * jumlahEsTeh;
-        let subtotalRoti = roti * jumlahRoti;
+    let total = 0;
+    let daftar = "";
 
-        let totalBelanja =
-            subtotalNasi + subtotalEsTeh + subtotalRoti;
+    for (let i = 1; i <= 3; i++) {
+        let barang = document.getElementById("barang" + i).value.trim();
+        let harga = document.getElementById("harga" + i).value;
+        let jumlah = document.getElementById("jumlah" + i).value;
 
-        let diskon = totalBelanja >= 50000
-            ? totalBelanja * 10 / 100
-            : 0;
-
-        let totalBayar = totalBelanja - diskon;
-
-        function rupiah(angka) {
-            return "Rp" + angka.toLocaleString("id-ID");
+        if (!barang || harga === "" || jumlah === "") {
+            alert("Lengkapi semua data barang!");
+            return;
         }
 
-        document.getElementById("pembeli").innerHTML =
-            "<b>Pembeli:</b> " + namaPembeli;
+        harga = Number(harga);
+        jumlah = Number(jumlah);
 
-        document.getElementById("daftarBarang").innerHTML = `
-            <tr>
-                <td>Nasi Goreng</td>
-                <td>${rupiah(nasiGoreng)}</td>
-                <td>${jumlahNasi}</td>
-                <td>${rupiah(subtotalNasi)}</td>
-            </tr>
-            <tr>
-                <td>Es Teh</td>
-                <td>${rupiah(esTeh)}</td>
-                <td>${jumlahEsTeh}</td>
-                <td>${rupiah(subtotalEsTeh)}</td>
-            </tr>
-            <tr>
-                <td>Roti</td>
-                <td>${rupiah(roti)}</td>
-                <td>${jumlahRoti}</td>
-                <td>${rupiah(subtotalRoti)}</td>
-            </tr>
+        if (harga < 0 || jumlah < 0 ||
+            !Number.isFinite(harga) || !Number.isFinite(jumlah) ||
+            !Number.isInteger(jumlah)) {
+            alert("Harga harus positif dan jumlah harus bilangan bulat nonnegatif!");
+            return;
+        }
+
+        let subtotal = harga * jumlah;
+        total += subtotal;
+
+        daftar += `
+            <p>${barang} (${jumlah} x ${rupiah(harga)})
+            = ${rupiah(subtotal)}</p>
         `;
+    }
 
-        document.getElementById("hasil").innerHTML = `
-            <b>Total Belanja:</b> ${rupiah(totalBelanja)}<br>
-            <b>Diskon:</b> ${rupiah(diskon)}<br>
-            <hr>
-            <b>Total Bayar:</b> ${rupiah(totalBayar)}
-        `;
+    let diskon = total >= 50000 ? total * 0.1 : 0;
+    let bayar = total - diskon;
 
-        console.log("Pembeli:", namaPembeli);
-        console.log("Total Belanja:", rupiah(totalBelanja));
-        console.log("Diskon:", rupiah(diskon));
-        console.log("Total Bayar:", rupiah(totalBayar));
-    </script>
+    console.log("Pembeli:", nama);
+    console.log("Total Belanja:", rupiah(total));
+    console.log("Diskon:", rupiah(diskon));
+    console.log("Total Bayar:", rupiah(bayar));
+
+    document.getElementById("hasil").innerHTML = `
+        <hr>
+        <h3>INVOICE PEMBELIAN</h3>
+        <p><b>Pembeli:</b> ${aman(nama)}</p>
+        ${daftar}
+        <hr>
+        <b>Total Belanja:</b> ${rupiah(total)}<br>
+        <b>Diskon:</b> ${rupiah(diskon)}<br>
+        <h3>Total Bayar: ${rupiah(bayar)}</h3>
+    `;
+}
+
+function rupiah(angka) {
+    return "Rp" + angka.toLocaleString("id-ID");
+}
+
+function aman(teks) {
+    let el = document.createElement("span");
+    el.textContent = teks;
+    return el.innerHTML;
+}
+</script>
 </body>
 </html>
