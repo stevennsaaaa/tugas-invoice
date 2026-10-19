@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice Kantin</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f0f4f8;
+            padding: 30px;
+        }
+        .invoice {
+            max-width: 500px;
+            margin: auto;
+            padding: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px #0002;
+        }
+        h1 { color: #15803d; text-align: center; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td {
+            padding: 10px 5px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+        th:last-child, td:last-child { text-align: right; }
+        .total {
+            margin-top: 20px;
+            line-height: 2;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 20px;
+            background: #15803d;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+        @media print {
+            body { background: white; padding: 0; }
+            .invoice { box-shadow: none; }
+            button { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="invoice">
+        <h1>INVOICE KANTIN</h1>
+        <p id="pembeli"></p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Barang</th>
+                    <th>Harga</th>
+                    <th>Jumlah</th>
+                    <th>Subtotal</th>
+                </tr>
+            </thead>
+            <tbody id="daftarBarang"></tbody>
+        </table>
+
+        <div class="total" id="hasil"></div>
+
+        <button onclick="window.print()">Cetak / Simpan PDF</button>
+    </div>
+
+    <script>
+        let namaPembeli = "Budi";
+
+        let nasiGoreng = 15000;
+        let jumlahNasi = 2;
+
+        let esTeh = 5000;
+        let jumlahEsTeh = 1;
+
+        let roti = 7000;
+        let jumlahRoti = 2;
+
+        let subtotalNasi = nasiGoreng * jumlahNasi;
+        let subtotalEsTeh = esTeh * jumlahEsTeh;
+        let subtotalRoti = roti * jumlahRoti;
+
+        let totalBelanja =
+            subtotalNasi + subtotalEsTeh + subtotalRoti;
+
+        let diskon = totalBelanja >= 50000
+            ? totalBelanja * 10 / 100
+            : 0;
+
+        let totalBayar = totalBelanja - diskon;
+
+        function rupiah(angka) {
+            return "Rp" + angka.toLocaleString("id-ID");
+        }
+
+        document.getElementById("pembeli").innerHTML =
+            "<b>Pembeli:</b> " + namaPembeli;
+
+        document.getElementById("daftarBarang").innerHTML = `
+            <tr>
+                <td>Nasi Goreng</td>
+                <td>${rupiah(nasiGoreng)}</td>
+                <td>${jumlahNasi}</td>
+                <td>${rupiah(subtotalNasi)}</td>
+            </tr>
+            <tr>
+                <td>Es Teh</td>
+                <td>${rupiah(esTeh)}</td>
+                <td>${jumlahEsTeh}</td>
+                <td>${rupiah(subtotalEsTeh)}</td>
+            </tr>
+            <tr>
+                <td>Roti</td>
+                <td>${rupiah(roti)}</td>
+                <td>${jumlahRoti}</td>
+                <td>${rupiah(subtotalRoti)}</td>
+            </tr>
+        `;
+
+        document.getElementById("hasil").innerHTML = `
+            <b>Total Belanja:</b> ${rupiah(totalBelanja)}<br>
+            <b>Diskon:</b> ${rupiah(diskon)}<br>
+            <hr>
+            <b>Total Bayar:</b> ${rupiah(totalBayar)}
+        `;
+
+        console.log("Pembeli:", namaPembeli);
+        console.log("Total Belanja:", rupiah(totalBelanja));
+        console.log("Diskon:", rupiah(diskon));
+        console.log("Total Bayar:", rupiah(totalBayar));
+    </script>
+</body>
+</html>
